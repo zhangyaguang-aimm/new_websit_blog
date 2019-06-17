@@ -1,0 +1,18 @@
+# 前端
+/baozi_blog/.DS_Store
+/baozi_blog/node_modules/
+/baozi_blog/dist/
+/baozi_blog/npm-debug.log*
+/baozi_blog/yarn-debug.log*
+/baozi_blog/yarn-error.log*
+
+# 后台
+/koa_blog/node_modules/
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
