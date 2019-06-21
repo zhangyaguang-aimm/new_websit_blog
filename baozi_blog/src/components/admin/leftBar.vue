@@ -33,6 +33,11 @@
                             <el-menu-item @click="$router.push('/admin/user/add')" index="1-3-2">新增用户</el-menu-item>
                         </el-submenu>
                     </el-menu-item-group>
+                    <el-menu-item-group>
+                        <template slot="title">管理</template>
+                        <el-menu-item @click="$router.push('/admin/tag')" index="1-4">标签</el-menu-item>
+                        <el-menu-item @click="$router.push('/admin/category')" index="1-5">分类</el-menu-item>
+                    </el-menu-item-group>
                     
                 </el-submenu>
                 <el-menu-item index="2">

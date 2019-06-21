@@ -28,6 +28,11 @@ export default {
                 password: ''
             }
         }
+    },
+    methods: {
+        goRegister(){
+            
+        }
     }
 }
 </script>

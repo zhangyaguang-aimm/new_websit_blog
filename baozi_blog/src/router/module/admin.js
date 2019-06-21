@@ -15,6 +15,12 @@ const admineRouter = {
             name: '新增博客',
             component: resolve => require(['@/views/admin/newBlog.vue'], resolve),
             meta: {title: '新增博客',requireAuthor: true,index: '1-2'}
+        },
+        {
+            path: 'tag',
+            name: '标签管理',
+            component: resolve => require(['@/views/admin/tag.vue'], resolve),
+            meta: {title: '标签管理', requireAuthor: true,index: '1-4'}
         }
     ].concat(userRouter)
 }

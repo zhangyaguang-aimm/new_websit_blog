@@ -2,7 +2,7 @@
     <div class="serach">
         <el-input class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
         <el-button size='small' class="search-btn" type="primary">搜索</el-button>
-        <el-button size='small' class="search-btn" type="primary">新增</el-button>
+        <el-button @click="addNewFun" size='small' class="search-btn" type="primary">新增</el-button>
     </div>
 </template>
 
@@ -11,6 +11,14 @@ export default {
     data () {
         return {
             serachValue: ''
+        }
+    },
+    methods: {
+        addNewFun(){
+            if(this.$parent.addTagFun){
+                // 新增标签
+                this.$parent.addTagFun()
+            }
         }
     }
 }

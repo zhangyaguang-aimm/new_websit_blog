@@ -12,7 +12,7 @@ import './assets/iconfont/iconfont.css'
 
 Vue.use(ElementUI)
 let instance = axios.create({
-  baseURL: '',
+  baseURL: '/blog/v1',
   timeout: 1000
 })
 Vue.prototype.$axios = instance
