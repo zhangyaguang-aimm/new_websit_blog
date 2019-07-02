@@ -7,22 +7,20 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        roles: []
+        userinfo: {}
     },
     mutations: {
-        'SET_ROLES':(state,roles) => {
-            state.roles = roles
+        'SET_ROLES':(state,userinfo) => {
+            state.userinfo = userinfo
         }
     },
     actions: {
         getUser({commit, state}){
             return new Promise((resolve,reject) => {
-                getUserInfo().then(data => {
+                getUserInfo(Vue.prototype.$axios).then(data => {
                     if(!data){
                         reject('验证失败，请重新登录.')
                     }
-                    const {roles} = data
-                    commit('SET_ROLES', roles)
                     resolve(data)
                 }).catch(error => {
                     reject(error)

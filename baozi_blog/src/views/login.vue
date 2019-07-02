@@ -66,9 +66,17 @@ export default {
         canplay() {
             this.vedioCanPlay = true
         },
-        goLogin(){
-            sessionStorage.setItem('token','admin')
-            this.$router.push('/admin')
+        async goLogin(){
+            let result = await this.$axios.post('/user/login',this.userInfo)
+            console.log(result)
+            if(result && result.data.code == 1){
+                localStorage.setItem('token',result.data.data.token)
+                localStorage.setItem('userinfo',JSON.stringify(result.data.data.userinfo))
+                this.$router.push('/admin')
+            }else{
+                this.$message.error(result.data.message)
+            }
+            
         },
         
         initVideo(){

@@ -1,6 +1,9 @@
 <template>
     <div class="admin-index">
-        <v-search></v-search>
+        <v-search 
+        :searchResult='searchResult'
+        @addTagFun='addTagFun'
+        ></v-search>
         <div class="blog-list">
              <el-table
                 :data="tableData"
@@ -10,18 +13,41 @@
                 width="180">
                 <template slot-scope="scope">
                     <i class="el-icon-time"></i>
-                    <span style="margin-left: 10px">{{ scope.row.date }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.createAt | getTime }}</span>
                 </template>
                 </el-table-column>
                 <el-table-column
-                label="姓名"
-                property="name"
+                label="标题"
+                property="title"
                 width="180">
                 </el-table-column>
                 <el-table-column
-                label="地址"
-                property="address"
+                label="标签"
+                property="tags"
                 >
+                <template slot-scope="scope">
+                    
+                    <el-tag style="margin-right: 5px;"
+                    v-for="(tag,index) in scope.row.tagList" 
+                    :key="tag.name"
+                    :type='index%2 == 0?"success":"info"'
+                    size="mini"
+                    >
+                        {{ tag.name }}
+                    </el-tag>
+                </template>
+                </el-table-column>
+                <el-table-column
+                label="图片"
+                property="imgUrl"
+                >
+                </el-table-column>
+                <el-table-column
+                label="作者"
+                >
+                <template slot-scope="scope">
+                    <span>{{ scope.row.userinfo | getUserInfo }}</span>
+                </template>
                 </el-table-column>
                 <el-table-column label="操作" width='200'>
                 <template slot-scope="scope">
@@ -40,7 +66,9 @@
             <el-pagination
             background
             layout="prev, pager, next"
-            :total="1000">
+            @current-change='handlePageNum'
+            :current-page='pageNum'
+            :total="count">
             </el-pagination>
         </div>
 
@@ -64,51 +92,60 @@ export default {
         return {
             serachValue: '',
             dialogFormVisible: false,
-            tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-                }
-            ]
+            count: 0,
+            tableData: [],
+            pageNum: 1
         }
     },
+    created () {
+        this.init()
+    },
+    filters: {
+        getTime(val){
+            return val.substring(0,10)
+        },
+        getUserInfo(val){
+            return val[0].username
+        }  
+    },
     methods: {
+        async init(obj){
+            obj = obj || {}
+            let result = await this.$axios.get('/blog/list',{
+                params: {
+                    pageNum: this.pageNum,
+                    searchKey: obj.searchKey || ''
+                }
+            })
+            console.log(result)
+            if(result && result.data.code == 1){
+                this.tableData = result.data.data.list
+                this.count = result.data.data.count
+            }
+        },
+        // 搜索列表
+        searchResult(val){
+            this.pageNum = 1
+            this.init({
+                searchKey: val
+            })
+        },
+        nullSerarchResult(val){
+            if(!val){
+                this.pageNum = 1
+                this.init()
+            }
+        },
+        // 切换分页
+        handlePageNum(val){
+            console.log(val)
+            this.pageNum = val
+            this.init()
+        },
+        // 去新增页面
+        addTagFun(){
+            this.$router.push('/admin/add_blog')
+        },
         handleEdit(index, row) {
             console.log(index, row);
             this.dialogFormVisible = true

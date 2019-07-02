@@ -36,7 +36,6 @@
                     <el-menu-item-group>
                         <template slot="title">管理</template>
                         <el-menu-item @click="$router.push('/admin/tag')" index="1-4">标签</el-menu-item>
-                        <el-menu-item @click="$router.push('/admin/category')" index="1-5">分类</el-menu-item>
                     </el-menu-item-group>
                     
                 </el-submenu>

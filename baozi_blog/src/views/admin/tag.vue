@@ -1,6 +1,9 @@
 <template>
     <div class="tag">
-        <v-search></v-search>
+        <v-search 
+        :searchResult='searchResult'
+        @addTagFun='addTagFun'
+        ></v-search>
         <div class="blog-list">
              <el-table
                 :data="tableData"
@@ -42,6 +45,7 @@
             <el-pagination
             background
             layout="prev, pager, next"
+            @current-change='handlePageNum'
             :total="allNum">
             </el-pagination>
         </div>
@@ -79,7 +83,8 @@ export default {
             ],
             showAddTag: false,
             allNum: 0,
-            isEditFlag: false
+            isEditFlag: false,
+            pageNum: 1,
         }
     },
     created () {
@@ -99,11 +104,32 @@ export default {
             this.isEditFlag = true
             this.tag = val
         },
-        async getInitInfo(){
-            let result = await this.$axios.get('/tag/list')
+        async getInitInfo(obj){
+            obj = obj || {}
+            let result = await this.$axios.get('/tag/list',{
+                params: {
+                    pageNum: this.pageNum,
+                    searchKey: obj.searchKey || ''
+                }
+            })
             console.log(result)
             this.tableData = result.data.data.list
             this.allNum = result.data.data.count
+        },
+        // 点击搜索
+        searchResult(val){
+            this.pageNum = 1
+            console.log(val)
+            this.getInitInfo({
+                searchKey: val
+            })
+        },
+        // 搜索框清空的时候调用下获取页面信息接口
+        nullSerarchResult(val){
+            if(!val){
+                this.pageNum = 1
+                this.getInitInfo()
+            }
         },
         async saveTagFun(){
             if(this.isEditFlag){
@@ -167,7 +193,13 @@ export default {
         cancleTag(){
             this.showAddTag = false
             this.isEditFlag = false
-        }
+        },
+        // 切换分页
+        handlePageNum(val){
+            console.log(val)
+            this.pageNum = val
+            this.getInitInfo()
+        },
 
     }
 }

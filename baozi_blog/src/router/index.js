@@ -69,8 +69,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requireAuthor)){
     store.dispatch('getUser').then(data => {
-      console.log(data)
-      if(data && data.length > 0){
+      if(data == 1){
         next()
       }else{
         next('/login')

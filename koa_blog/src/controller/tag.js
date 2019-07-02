@@ -28,11 +28,16 @@ class TagController{
     }
 
     static async getTagList(ctx) {
-        let pageNum = ctx.query.pageNum || 0
+        let pageNum = ctx.query.pageNum || 1
         let pageSize = ctx.query.pageSize || 10
-        let result = await TagModel.find()
-                .sort({createAt: 1}).skip(pageNum*pageSize)
-                .limit(pageSize)
+        let searchKey = ctx.query.searchKey || ''
+        let result = await TagModel.find({
+            $or: [
+                {name: {$regex: searchKey,$options: '$i'}}
+            ]
+        })
+        .sort({createAt: 1}).skip((pageNum-1)*pageSize)
+        .limit(pageSize)
         let count = await TagModel.find().count()
         if(result && result.length >= 0){
             ctx.body = new SuccessResModel({

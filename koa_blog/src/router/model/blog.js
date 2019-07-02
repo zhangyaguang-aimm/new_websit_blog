@@ -1,12 +1,7 @@
 const router = require('koa-router')()
+const BlogController = require('../../controller/blog')
 
-router.get('/list', async(ctx) => {
-    ctx.body = {
-        method: ctx.method,
-        status: 200,
-        data: ctx.url,
-        success: '成功'
-    }
-})
+router.get('/list', BlogController.getList)
+router.post('/add', BlogController.addBlog)
 
 module.exports = router.routes()

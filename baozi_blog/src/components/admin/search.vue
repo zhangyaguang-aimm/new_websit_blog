@@ -1,24 +1,41 @@
 <template>
     <div class="serach">
-        <el-input class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
-        <el-button size='small' class="search-btn" type="primary">搜索</el-button>
+        <el-input @input="changeInput" class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
+        <el-button @click="searchResultChild" size='small' class="search-btn" type="primary">搜索</el-button>
         <el-button @click="addNewFun" size='small' class="search-btn" type="primary">新增</el-button>
     </div>
 </template>
 
 <script>
 export default {
+    props: {
+        searchResult: {
+            type: Function,
+            default: null
+        }
+    },
     data () {
         return {
             serachValue: ''
         }
     },
     methods: {
-        addNewFun(){
-            if(this.$parent.addTagFun){
-                // 新增标签
-                this.$parent.addTagFun()
+        searchResultChild(){
+            // 调用方法2，这种需要再props中声明
+            if(this.searchResult){
+                this.searchResult(this.serachValue)
             }
+        },
+        changeInput(){
+            // 子元素调用父元素的方法1
+            if(this.$parent.nullSerarchResult){
+                // 新增标签
+                this.$parent.nullSerarchResult(this.serachValue)
+            }
+        },
+        addNewFun(){
+            // 第三种方式是发布给父元素
+            this.$emit('addTagFun')
         }
     }
 }

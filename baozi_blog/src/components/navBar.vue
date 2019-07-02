@@ -21,19 +21,19 @@ export default {
            interval: 5000,
            list: [
                {
-                   img: require('../assets/images/nav_one.jpg')
+                   img: 'http://img.baozinews.cn/blog/static/nav_one.jpg'
                },
                {
-                   img: require('../assets/images/nav_two.jpg')
+                   img: 'http://img.baozinews.cn/blog/static/nav_two.jpg'
                },
                {
-                   img: require('../assets/images/nav_three.jpg')
+                   img: 'http://img.baozinews.cn/blog/static/nav_three.jpg'
                },
                {
-                   img: require('../assets/images/nav_four.jpg')
+                   img: 'http://img.baozinews.cn/blog/static/nav_four.jpg'
                },
                {
-                   img: require('../assets/images/nav_five.jpg')
+                   img: 'http://img.baozinews.cn/blog/static/nav_five.jpg'
                }
            ] 
         }

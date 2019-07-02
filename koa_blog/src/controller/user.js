@@ -24,7 +24,7 @@ class UserController{
         let newUser = new UserModel({
             username: req.username,
             password: req.password,
-            power: req.username == 'admin' ? 1 : 10
+            power: req.username == 'admin' ? 10 : 1
         })
         await newUser.save()
         ctx.body = new SuccessResModel('注册成功')
@@ -32,12 +32,17 @@ class UserController{
     // 登录
     static async loginUser(ctx){
         let req = ctx.request.body
-        let result = await UserModel.findOne({'username': req.username})
+        let result = await UserModel.findOne({'username': req.username,'password': req.password})
         if(result){
             let token = new jwtClass({username: req.username}).createToken()
             console.log(token)
-            ctx.body = new SuccessResModel(token, '登录成功')
+            ctx.body = new SuccessResModel({
+                token: token,
+                userinfo: result
+            }, '登录成功')
+            return
         }
+        ctx.body = new ErrorResModel('账号密码不正确')
         
     }
     // 获取用户信息
@@ -57,7 +62,7 @@ class UserController{
     }
     // 获取用户列表
     static async getUserList(ctx){
-
+        
     }
 }
 

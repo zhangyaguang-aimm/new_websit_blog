@@ -1,0 +1,2 @@
+webpackJsonp([9],{EfOn:function(e,t){},G2Qr:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r={render:function(){var e=this.$createElement,t=this._self._c||e;return t("div",{staticClass:"casual-note"},[this._v("\n    suibi\n    "),t("router-view")],1)},staticRenderFns:[]};var a=n("C7Lr")({data:function(){return{}}},r,!1,function(e){n("EfOn")},"data-v-aefc6cec",null);t.default=a.exports}});
+//# sourceMappingURL=9.4e46fd839f0a5466e218.js.map

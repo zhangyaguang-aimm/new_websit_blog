@@ -63,6 +63,7 @@ export default {
     top: 0;
     background: #4a4a4a;
     color: #fff;
+    z-index: 222;
     .top{
         max-width: 1140px;
         margin: 0 auto;

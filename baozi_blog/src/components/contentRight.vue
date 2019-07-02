@@ -26,7 +26,7 @@
                 v-for="(item,index) in hotList" 
                 :key="index" >
                     <div class="left">
-                        <img :src="item.img ||require('../assets/images/default.jpg')" alt="">
+                        <img :src="item.img || 'http://img.baozinews.cn/blog/static/default.jpg'" alt="">
                     </div>
                     <div class="right">
                         <div class="hot-title">{{item.title}}</div>
