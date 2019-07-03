@@ -5,6 +5,8 @@ const {
     ErrorResModel
 } = require('../common/resModel')
 
+const mongoose = require('mongoose')
+
 class BlogController{
     constructor(){}
 
@@ -39,11 +41,12 @@ class BlogController{
                     ]
                 },
             },
-            {$sort: {createAt: 1}},
+            {$sort: {createAt: -1}},
             {$skip: (pageNum-1)*pageSize},
-            {$limit: pageSize}
+            {$limit: pageSize},
         ])
-        let count = await BlogModel.find().count()
+        // 获取指定查询条件的文档数量
+        let count = await BlogModel.count({title: {$regex: searchKey,$options: '$i'}})
         if(result && result.length >= 0){
             ctx.body = new SuccessResModel({
                 list: result,
@@ -69,6 +72,7 @@ class BlogController{
                 modeifyAt: req.modeifyAt || Date.now(),
                 isShow: req.isShow || true,
                 imgUrl: req.imgUrl,
+                isTop: req.isTop,
                 tags: req.tags || [],
                 author: req.author
             })
@@ -77,6 +81,34 @@ class BlogController{
                 data: resultSave
             }, '保存成功')
         }catch(err){
+            ctx.body = new ErrorResModel('请填写完成数据')
+        }
+    }
+
+    // 更新文章
+    static async updateBlog(ctx){
+        try{
+            let req = ctx.request.body
+            console.log(req._id)
+            let newBlog = new BlogModel({
+                title: req.title,
+                content: req.content,
+                createAt: req.createAt || Date.now(),
+                modeifyAt: req.modeifyAt || Date.now(),
+                isShow: req.isShow || true,
+                imgUrl: req.imgUrl,
+                tags: req.tags || [],
+                isTop: req.isTop,
+                author: req.author,
+                _id: mongoose.Types.ObjectId(req._id)
+            })
+            let result = await BlogModel.updateOne({'_id':mongoose.Types.ObjectId(req._id)},newBlog)
+            console.log(result)
+            ctx.body = new SuccessResModel({
+                data: result
+            },'更新成功')
+        }catch(err){
+            console.log(err)
             ctx.body = new ErrorResModel('请填写完成数据')
         }
     }

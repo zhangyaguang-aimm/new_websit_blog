@@ -1,7 +1,9 @@
 <template>
     <div class="serach">
-        <el-input @input="changeInput" class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
-        <el-button @click="searchResultChild" size='small' class="search-btn" type="primary">搜索</el-button>
+        <el-input 
+        @keyup.enter.native="searchResultChild"
+        @input="changeInput" class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
+        <el-button  @click="searchResultChild" size='small' class="search-btn" type="primary">搜索</el-button>
         <el-button @click="addNewFun" size='small' class="search-btn" type="primary">新增</el-button>
     </div>
 </template>
@@ -22,7 +24,8 @@ export default {
     methods: {
         searchResultChild(){
             // 调用方法2，这种需要再props中声明
-            if(this.searchResult){
+            
+            if(this.serachValue && this.searchResult){
                 this.searchResult(this.serachValue)
             }
         },

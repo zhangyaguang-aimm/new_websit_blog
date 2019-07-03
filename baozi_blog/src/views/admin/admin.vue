@@ -45,9 +45,10 @@ export default {
         height: 100%;
     }
     .right{
-        flex: 1;
+        width: 100%;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         
     }
 }

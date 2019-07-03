@@ -67,6 +67,11 @@ export default {
     created () {
         this.initRouter()
     },
+    watch: {
+        '$route.path': function(){
+            this.initRouter()
+        }  
+    },
     methods: {
         initRouter(){
             console.log(this.$route)

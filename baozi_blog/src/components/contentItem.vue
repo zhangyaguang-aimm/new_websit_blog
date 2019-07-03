@@ -1,12 +1,12 @@
 <template>
     <div class="content-item">
-        <img class="bg-img" v-if='target.img' :src="target.img" alt="">
+        <img class="bg-img" v-if='target.imgUrl' :src="target.imgUrl" alt="">
         <div class="text">
             <div class="title">{{target.title}}</div>
             <div class="article-about">
-                <div class="author"><span class="el-icon-user-solid"></span>{{target.author}}</div>
-                <div class="calendar"><span class="el-icon-date"></span>{{target.time}}</div>
-                <div class="visitors "><span class="el-icon-view"></span>{{target.visitors || 0}}</div>
+                <div class="author"><span class="el-icon-user-solid"></span>{{target.userinfo[0].username}}</div>
+                <div class="calendar"><span class="el-icon-date"></span>{{target.createAt | getTime}}</div>
+                <div class="visitors "><span class="el-icon-view"></span>{{target.clickNum || 0}}</div>
             </div>
             <div class="shape"></div>
             <div class="content">
@@ -28,6 +28,12 @@ export default {
         return {
             
         }
+    },
+    filters: {
+        getTime(val){
+            val = new Date(val)
+            return val.getFullYear()+'-'+(val.getMonth() + 1)+'-'+val.getDate()
+        }
     }
 }
 </script>
@@ -39,6 +45,9 @@ export default {
     border: 1px solid #e9e9e9;
     margin-top: 20px;
     font-family: 'Merriweather', serif;
+    &:last-of-type{
+        margin-bottom: 20px;
+    }
     .bg-img{
         width: 100%;
         height: 300px;

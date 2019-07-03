@@ -39,8 +39,10 @@
                 </el-table-column>
                 <el-table-column
                 label="图片"
-                property="imgUrl"
                 >
+                <template slot-scope="scope">
+                    <img width="50" :src="scope.row.imgUrl || 'http://img.baozinews.cn/blog/static/default.jpg'" alt="">
+                </template>
                 </el-table-column>
                 <el-table-column
                 label="作者"
@@ -48,6 +50,15 @@
                 <template slot-scope="scope">
                     <span>{{ scope.row.userinfo | getUserInfo }}</span>
                 </template>
+                
+                </el-table-column>
+                 <el-table-column
+                label="置顶"
+                >
+                <template slot-scope="scope">
+                    <span>{{ scope.row.isTop?'是':'否' }}</span>
+                </template>
+                
                 </el-table-column>
                 <el-table-column label="操作" width='200'>
                 <template slot-scope="scope">
@@ -76,7 +87,7 @@
         top='5vh'
         width='80%'
         :visible.sync="dialogFormVisible">
-            <blog-template :modifyFlag='true'></blog-template>
+            <blog-template @modifyBlog='modifyBlog' :form='form' :modifyFlag='true'></blog-template>
         </el-dialog>
     </div>
 </template>
@@ -94,7 +105,8 @@ export default {
             dialogFormVisible: false,
             count: 0,
             tableData: [],
-            pageNum: 1
+            pageNum: 1,
+            form: {}
         }
     },
     created () {
@@ -102,7 +114,9 @@ export default {
     },
     filters: {
         getTime(val){
-            return val.substring(0,10)
+            console.log(val)
+            val = new Date(val)
+            return val.getFullYear()+'-'+(val.getMonth() + 1)+'-'+val.getDate()
         },
         getUserInfo(val){
             return val[0].username
@@ -131,6 +145,7 @@ export default {
             })
         },
         nullSerarchResult(val){
+            console.log(val,'111')
             if(!val){
                 this.pageNum = 1
                 this.init()
@@ -138,7 +153,6 @@ export default {
         },
         // 切换分页
         handlePageNum(val){
-            console.log(val)
             this.pageNum = val
             this.init()
         },
@@ -148,10 +162,16 @@ export default {
         },
         handleEdit(index, row) {
             console.log(index, row);
+            this.form = row
             this.dialogFormVisible = true
         },
         handleDelete(index, row) {
             console.log(index, row);
+        },
+        // 子元素修改博客调用
+        modifyBlog(){
+            this.dialogFormVisible = false
+            this.init()
         }
     }
 }

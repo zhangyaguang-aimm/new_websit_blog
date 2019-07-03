@@ -7,11 +7,21 @@
                 <content-item v-for="(item,index) in initList"
                 :key="index"
                 :target='item'></content-item>
+                <div class="paging">
+                    <el-pagination
+                    layout="prev, pager, next"
+                    class="index-pagination"
+                    @current-change='handlePageNum'
+                    :current-page='pageNum'
+                    :total="count">
+                    </el-pagination>
+                </div>
             </div>
             <div class="right">
                 <content-right></content-right>
             </div>
         </div>
+        
     </div>
 </template>
 <script>
@@ -27,31 +37,34 @@ export default {
     },
     data () {
         return {
-            initList: [
-                {
-                    title: 'Intense Happiness and Love',
-                    time: '2017-08-20',
-                    contents: [],
-                    author: 'admin',
-                    visitors: 22,
-                    img: 'http://demo.cssmoban.com/cssthemes4/mz_21_bfl/assets/i/b2.jpg',
-                    content: 'Lorem Ipsum është një tekst shabllon i industrisë së printimit dhe shtypshkronjave. Lorem Ipsum ka qenë teksti shabllon i industrisë që nga vitet 1500, kur një shtypës i panjohur morr'
-                },
-                {
-                    title: 'Intense Happiness and Love',
-                    time: '2017-08-20',
-                    contents: [],
-                    author: 'admin',
-                    content: 'Lorem Ipsum është një tekst shabllon i industrisë së printimit dhe shtypshkronjave. Lorem Ipsum ka qenë teksti shabllon i industrisë që nga vitet 1500, kur një shtypës i panjohur morr'
-                },
-                {
-                    title: 'Intense Happiness and Love',
-                    time: '2017-08-20',
-                    contents: [],
-                    author: 'admin',
-                    content: 'Lorem Lorem rem Ipsum  Ipsum është një tekst shabllon i ind IpsLorem Ipsum është një tekst shabllon i indum Lorem Ipsum është një tekst shabllon i indështë një tekst shabllon i industrisë së printimit dhe shtypshkronjave. Lorem Ipsum ka qenë teksti shabllon i industrisë që nga vitet 1500, kur një shtypës i panjohur morr'
+            initList: [],
+            pageNum: 1,
+            searchKey: '',
+            count: 0
+        }
+    },
+    created () {
+        this.initPage()  
+    },
+    methods: {
+        async initPage(obj){
+            document.body.scrollTop = 0
+            document.documentElement.scrollTop = 0
+            let result = await this.$axios.get('/blog/list',{
+                params: {
+                    pageNum: this.pageNum,
+                    searchKey: this.searchKey || ''
                 }
-            ]
+            })
+            if(result.data.code == 1){
+                this.initList = result.data.data.list
+                this.count = result.data.data.count
+            }
+        },
+        handlePageNum(val){
+            this.pageNum = val
+            console.log(this.pageNum)
+            this.initPage()
         }
     }
 }
@@ -65,6 +78,10 @@ export default {
         justify-content: space-between;
         .left{
             width: 750px;
+            .index-pagination{
+                margin: 20px 0;
+                background: #fff;
+            }
         }
         .right{
             width: 325px;

@@ -30,12 +30,20 @@
                 placeholder="选择日期时间">
                 </el-date-picker>
             </el-form-item>
+            <el-form-item label="置顶">
+                <el-switch
+                v-model="form.isTop"
+                @change='changeTop'
+                >
+                </el-switch>
+            </el-form-item>
             <el-form-item class="blog-item-input" label="图片">
                 <el-upload
                 action="/blog/v1/img/upload"
                 list-type="picture-card"
                 :limit='limitImg'
-                :on-preview="handlePictureCardPreview"
+                :file-list="getImg"
+                :on-success="handlePictureCardPreview"
                 :on-remove="handleRemove">
                 <i class="el-icon-plus"></i>
                 </el-upload>
@@ -44,9 +52,14 @@
                 </el-dialog>
             </el-form-item>
         </el-form>
-        <mavon-editor class="blog-content" v-model="form.content"></mavon-editor>
+        <mavon-editor 
+        class="blog-content" 
+        ref='md'
+        v-model="form.content"
+        @imgAdd="imgAdd"
+        ></mavon-editor>
         
-        <el-button v-if="modifyFlag" class="publish" type='primary' size='small'>修改文章</el-button>
+        <el-button v-if="modifyFlag" class="publish" @click="updateBlog" type='primary' size='small'>修改文章</el-button>
         <el-button v-else class="publish" type='primary' size='small' @click="publishBlog">发布文章</el-button>
     </div>
 </template>
@@ -58,21 +71,37 @@ export default {
         modifyFlag: {
             type: Boolean,
             default: false
-        }
+        },
+        form: {
+            type: Object,
+            default: function(){
+                return {
+                    title: '',
+                    createAt: '',
+                    tags: '',
+                    imgUrl: '',
+                    isTop: false
+                }
+            }
+        },
+        
     },
     components: {
         mavonEditor,
+    },
+    computed: {
+        getImg(){
+            console.log(this.form.imgUrl)
+            if(this.form.imgUrl){
+                return [{name: '', url: this.form.imgUrl}]
+            }
+            return []
+        }  
     },
     data () {
         return {
             limitNum: 3,
             limitImg: 1,
-            form: {
-                title: '',
-                createAt: '',
-                tags: '',
-                imgUrl: ''
-            },
             options: [],
         }
     },
@@ -93,9 +122,16 @@ export default {
             }
         },
         handlePictureCardPreview(val){
-            console.log(val)
+            if(val.code == 1){
+                this.form.imgUrl = val.data.url
+            }
         },
         handleRemove(val){
+            console.log(val)
+        },
+        // 置顶开关
+        changeTop(val){
+            this.form.isTop = val
             console.log(val)
         },
         async publishBlog(){
@@ -114,6 +150,31 @@ export default {
                     type: 'error',
                     message: result.data.message
                 })
+            }
+        },
+        imgAdd(pos, $file){
+            // 第一步.将图片上传到服务器.
+            var formdata = new FormData();
+            formdata.append('file', $file);
+            this.$axios({
+                url: '/img/upload',
+                method: 'post',
+                data: formdata,
+                headers: { 'Content-Type': 'multipart/form-data' },
+            }).then((res) => {
+                console.log(res)
+                this.$refs.md.$img2Url(pos, res.data.data.url);
+            })
+        },
+        async updateBlog(){
+            let result = await this.$axios.post('/blog/update',this.form)
+            console.log(result)
+            if(result.data.code == 1){
+                this.$message({
+                    type: 'success',
+                    message: result.data.message
+                })
+                this.$emit('modifyBlog')
             }
         }
     }
@@ -142,7 +203,6 @@ export default {
     }
     .blog-content{
         height: 900px;
-        width: 100%;
         padding: 0 0 0 40px;
         box-sizing: border-box;
     }

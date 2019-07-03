@@ -33,7 +33,15 @@ const blogSchema = new Schema({
         type: Number,
         default: 0
     },
-    imgUrl: String
+    imgUrl: String,
+    power: {
+        type: Number,
+        default: 0
+    },
+    isTop: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const BlogModel = mongoose.model('Blogs', blogSchema)
