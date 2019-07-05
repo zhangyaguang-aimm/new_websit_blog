@@ -10,7 +10,21 @@
                 </div>
             </div>
             <div class="right">
-
+                <template v-if="!token">
+                    <div class="item" @click="goLogin">登录</div>
+                    <div class="item" @click="goRegister">注册</div>
+                </template>
+                <template v-else>
+                    <el-dropdown @command='handleCommand'  class="mine">
+                        <span class="el-dropdown-link">
+                            个人中心<i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command='1'>后台管理</el-dropdown-item>
+                            <el-dropdown-item command='2'>退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </template>
             </div>
         </div>
     </div>
@@ -37,7 +51,8 @@ export default {
                     title: '关于',
                     path: '/about'
                 }
-            ]
+            ],
+            token: ''
         }
     },
     created () {
@@ -49,8 +64,25 @@ export default {
             this.$router.push(item.path)
         },
         initHeader(){
-            console.log(this.$route.path,window.location.href)
+            this.token = localStorage.getItem('token') || ''
             this.currentPath = this.$route.path
+        },
+        goLogin(){
+            this.$router.push('/login')
+        },
+        goRegister(){
+            this.$router.push('/register')
+        },
+        handleCommand(val){
+            console.log(val)
+            if(val == 1){
+                this.$router.push('/admin')
+            }else if(val == 2){
+                localStorage.removeItem('token')
+                localStorage.removeItem('userinfo')
+                this.$router.go(0)
+            }
+            
         }
     }
 }
@@ -67,6 +99,8 @@ export default {
     .top{
         max-width: 1140px;
         margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
         .left{
             display: flex;
             align-items: center;
@@ -79,6 +113,22 @@ export default {
                 &.active{
                     background: #404040;
                 }
+            }
+        }
+        .right{
+            display: flex;
+            align-items: center;
+            .item{
+                margin-left: 20px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                &:hover{
+                    color: #409EFF;
+                }
+            }
+            .mine{
+                color: #fff;
+                cursor: pointer;
             }
         }
     }

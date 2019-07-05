@@ -12,17 +12,18 @@
             </div>
         </div>
         <div class="box">
-            <div class="title">管理后台</div>
+            <div class="title">用户登录</div>
             <div class="username item-box">
-                <el-input class="item-input" placeholder="请输入用户名" v-model="userInfo.username">
+                <el-input @keyup.enter.native="goLogin" class="item-input" placeholder="请输入用户名" v-model="userInfo.username">
                 </el-input>
                 <span class="el-icon-user input-icon"></span>
             </div>
             <div class="password item-box">
-                <el-input class="item-input" placeholder="请输入密码" type='password' v-model="userInfo.password">
+                <el-input @keyup.enter.native="goLogin" class="item-input" placeholder="请输入密码" type='password' v-model="userInfo.password">
                 </el-input>
                 <span class="el-icon-lock input-icon"></span>
             </div>
+            <div class="tip" @click="goRegister">没有账号?<span>注册</span></div>
             <div class="login-btn-box">
                 <el-button 
                 @click="goLogin"
@@ -72,7 +73,7 @@ export default {
             if(result && result.data.code == 1){
                 localStorage.setItem('token',result.data.data.token)
                 localStorage.setItem('userinfo',JSON.stringify(result.data.data.userinfo))
-                this.$router.push('/admin')
+                this.$router.push('/')
             }else{
                 this.$message.error(result.data.message)
             }
@@ -107,6 +108,9 @@ export default {
                 }
             }
             window.onresize()
+        },
+        goRegister(){
+            this.$router.push('/register')
         }
     },
     mounted: function() {
@@ -163,9 +167,19 @@ export default {
                 left: 10px;
             }
         }
+        .tip{
+            padding: 10px 0;
+            color: rgba(255, 255, 255, 0.8);
+            span{
+                color: #fff;
+                cursor: pointer;
+                &:hover{
+                    color: #409EFF;
+                }
+            }
+        }
         .login-btn-box{
             width: 100%;
-            margin-top: 30px;
             .login-btn{
                 width: 100%;
                 font-size: 16px;

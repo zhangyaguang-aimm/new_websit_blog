@@ -10,7 +10,7 @@
         active-text-color="#ffd04b">
             <el-submenu index="2">
                 <template slot="title">后台管理</template>
-                <el-menu-item index="2-1">个人中心</el-menu-item>
+                <el-menu-item @click="$router.push('/')" index="2-1">博客首页</el-menu-item>
                 <el-menu-item @click="logout" index="2-2">退出</el-menu-item>
             </el-submenu>
         </el-menu>

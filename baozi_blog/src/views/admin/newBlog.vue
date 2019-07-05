@@ -13,6 +13,27 @@ export default {
         return {
             
         }
+    },
+    methods: {
+        // 发布文章
+        async publishBlog(obj){
+            obj.createAt = new Date(obj.createAt).getTime()
+            let result = await this.$axios.post('/blog/add',Object.assign(
+                obj, {author: JSON.parse(localStorage.getItem('userinfo'))._id}
+            ))
+            if(result && result.data.code == 1){
+                this.$message({
+                    type: 'success',
+                    message: result.data.message
+                })
+                this.$router.push('/admin')
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: result.data.message
+                })
+            }
+        },
     }
 }
 </script>

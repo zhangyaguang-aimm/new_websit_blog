@@ -97,3 +97,75 @@ let token = new jwtClass({username: req.username}).createToken()
 let resultToken = new jwtClass('',token).verifyToken()
 
 ```
+
+
+
+
+#### 用户密码加密
+
+使用的是bcrypt对密码进行加密和验证，注册用户的时候对密码进行加密，登录的时候去验证密码是否正确。
+
+
+```
+// 注册
+static async registerUser(ctx){
+    let req = ctx.request.body
+    let result = await UserModel.findOne({'username': req.username})
+    if(result){
+        ctx.body = new ErrorResModel('用户名已存在')
+        return
+    }
+
+    // 密码加密
+    let password = req.password
+    // hash是对密码进行加密处理生成一个hash值，这里的password是输入的密码，10是曼哈希轮数，支持异步处理，并把生成的hash值作为密码存到数据库
+    let hashPassword = await bcrypt.hash(password,10)
+
+    let newUser = new UserModel({
+        username: req.username,
+        password: hashPassword,
+        power: req.username == 'admin' ? 10 : 1,
+        modifyAt: req.modifyAt || '',
+        email: req.email || '',
+        telphone: req.telphone || '',
+        realName: req.realName || ''
+    })
+    await newUser.save()
+    let token = new jwtClass({username: req.username}).createToken()
+    ctx.body = new SuccessResModel({
+        token: token,
+        userinfo: {username: req.username}
+    },'注册成功')
+}
+
+// 登录
+static async loginUser(ctx){
+    let req = ctx.request.body
+
+    let result = await UserModel.findOne({'username': req.username})
+    // 比较输入的密码和数据库存储的密码是否一致，返回false不一致，返回true一致
+    let flag = await bcrypt.compare(req.password,result.password)
+    if(!flag){
+        // 验证不通过
+        ctx.body = new ErrorResModel('账号密码不正确')
+        return
+    }
+    if(result){
+        let token = new jwtClass({username: req.username}).createToken()
+        ctx.body = new SuccessResModel({
+            token: token,
+            userinfo: result
+        }, '登录成功')
+        return
+    }
+    ctx.body = new ErrorResModel('账号密码不正确')
+    
+}
+
+```
+
+
+
+
+
+

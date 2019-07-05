@@ -87,7 +87,7 @@
         top='5vh'
         width='80%'
         :visible.sync="dialogFormVisible">
-            <blog-template @modifyBlog='modifyBlog' :form='form' :modifyFlag='true'></blog-template>
+            <blog-template :updateContent='updateContent' :form='form' :modifyFlag='true'></blog-template>
         </el-dialog>
     </div>
 </template>
@@ -145,7 +145,7 @@ export default {
             })
         },
         nullSerarchResult(val){
-            console.log(val,'111')
+            console.log(val,'22')
             if(!val){
                 this.pageNum = 1
                 this.init()
@@ -172,6 +172,17 @@ export default {
         modifyBlog(){
             this.dialogFormVisible = false
             this.init()
+        },
+        // 更新文章内容
+        async updateContent(obj){
+            let result = await this.$axios.post('/blog/update',obj)
+            if(result.data.code == 1){
+                this.$message({
+                    type: 'success',
+                    message: result.data.message
+                })
+                this.modifyBlog()
+            }
         }
     }
 }

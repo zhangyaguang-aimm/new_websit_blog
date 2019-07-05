@@ -9,6 +9,7 @@ import adminRouter from './module/admin'
 Vue.use(Router)
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -20,6 +21,14 @@ const router = new Router({
           component: resolve => require(['../views/index.vue'], resolve),
           meta: {
             title: '首页'
+          }
+        },
+        {
+          path: '/detail/:id',
+          name: '详情',
+          component: resolve => require(['../views/detail.vue'],resolve),
+          meta: {
+            title: '详情'
           }
         },
         {
@@ -62,6 +71,12 @@ const router = new Router({
       name: '登录',
       component: resolve => require(['@/views/login.vue'], resolve),
       meta: {title: '登录'}
+    },
+    {
+      path: '/register',
+      name: '注册',
+      component: resolve => require(['@/views/register.vue'], resolve),
+      meta: {title: '注册'}
     }
   ]
 })

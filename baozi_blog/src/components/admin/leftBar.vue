@@ -23,14 +23,12 @@
                         <template slot="title">博客</template>
                         <el-menu-item @click="$router.push('/admin')" index="1-1">首页列表</el-menu-item>
                         <el-menu-item @click="$router.push('/admin/add_blog')" index="1-2">新增</el-menu-item>
-                        
                     </el-menu-item-group>
                     <el-menu-item-group>
                          <template slot="title">用户</template>
                         <el-submenu index="1-3">
                             <template slot="title">用户管理</template>
                             <el-menu-item @click="$router.push('/admin/user/list')" index="1-3-1">用户列表</el-menu-item>
-                            <el-menu-item @click="$router.push('/admin/user/add')" index="1-3-2">新增用户</el-menu-item>
                         </el-submenu>
                     </el-menu-item-group>
                     <el-menu-item-group>
@@ -39,10 +37,17 @@
                     </el-menu-item-group>
                     
                 </el-submenu>
-                <el-menu-item index="2">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">导航二</span>
-                </el-menu-item>
+                <el-submenu index="2">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">个人日记</span>
+                    </template>
+                    <el-menu-item-group>
+                        <template slot="title">文章</template>
+                        <el-menu-item @click="$router.push('/admin/article')" index="2-1">文章列表</el-menu-item>
+                        <el-menu-item @click="$router.push('/admin/add_article')" index="2-2">新增文章</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
                 <el-menu-item index="3" disabled>
                     <i class="el-icon-document"></i>
                     <span slot="title">导航三</span>

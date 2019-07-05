@@ -1,4 +1,5 @@
 const BlogModel = require('../database/model/blog')
+const ArticleModel = require('../database/model/article')
 
 const {
     SuccessResModel,
@@ -110,6 +111,83 @@ class BlogController{
         }catch(err){
             console.log(err)
             ctx.body = new ErrorResModel('请填写完成数据')
+        }
+    }
+
+    // 获取最新的列表
+    static async newBlogList(){
+        let result = await BlogModel.find().sort({createAt: -1}).limit(3)
+        return result
+    }
+    // 最热的列表
+    static async hotBlogList(){
+        let result = await BlogModel.find({isTop: true}).sort({createAt: -1}).limit(3)
+        return result
+    }
+    // 获取最热和最新
+     static async newHotList(ctx){
+        try{
+            let newBlog = await this.newBlogList()
+            let hotBlog = await this.hotBlogList()
+
+            ctx.body = new SuccessResModel({
+                newBlogList: newBlog,
+                hotBlogList: hotBlog
+            },'获取成功')
+        }catch(err){
+            ctx.body = new ErrorResModel('获取失败')
+        }
+    }
+    // 获取一个blog信息(这个是结合了文章和博客的两个库)
+    static async getOneBlog(ctx){
+        let _id = ctx.query._id
+        let result = await BlogModel.aggregate([
+            {
+                // 单个关联
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'userinfo'
+                }
+            },
+            {
+                // 数组关联
+                $lookup: {
+                    from: 'tags',
+                    localField: 'tags',
+                    foreignField: '_id',
+                    as: 'tagList'
+                }
+            },
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(_id)
+                },
+            }
+        ])
+
+        let resultArticle = await ArticleModel.aggregate([
+            {
+                // 单个关联
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'userinfo'
+                }
+            },
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(_id)
+                },
+            }
+        ])
+        if(result.length > 0 || resultArticle.length > 0){
+            let resultObj = result[0] || resultArticle[0]
+            ctx.body = new SuccessResModel(resultObj, '获取成功')
+        }else{
+            ctx.body = new ErrorResModel('未找到对应文章')
         }
     }
 }

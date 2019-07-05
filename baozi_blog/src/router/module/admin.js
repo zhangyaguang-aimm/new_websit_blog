@@ -21,6 +21,18 @@ const admineRouter = {
             name: '标签管理',
             component: resolve => require(['@/views/admin/tag.vue'], resolve),
             meta: {title: '标签管理', requireAuthor: true,index: '1-4'}
+        },
+        {
+            path: 'article',
+            name: '个人日记',
+            component: resolve => require(['@/views/admin/articleList.vue'], resolve),
+            meta: {title: '个人日记', requireAuthor: true, index: '2-1'}
+        },
+        {
+            path: 'add_article',
+            name: '新增日记',
+            component: resolve => require(['@/views/admin/newArticle.vue'], resolve),
+            meta: {title: '新增日记',requireAuthor: true, index: '2-2'}
         }
     ].concat(userRouter)
 }

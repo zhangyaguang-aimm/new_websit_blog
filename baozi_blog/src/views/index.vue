@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="right">
-                <content-right></content-right>
+                <content-right :search='true'></content-right>
             </div>
         </div>
         
@@ -56,14 +56,25 @@ export default {
                     searchKey: this.searchKey || ''
                 }
             })
-            if(result.data.code == 1){
+            if(result.data.code == 1 && result.data.data.list.length > 0){
                 this.initList = result.data.data.list
                 this.count = result.data.data.count
+            }else{
+                this.$message({
+                    type: 'warning',
+                    message: '没有相关搜索内容'
+                })
             }
         },
         handlePageNum(val){
             this.pageNum = val
             console.log(this.pageNum)
+            this.initPage()
+        },
+        // 子元素搜索调用
+        searchResultParent(val){
+            this.pageNum = 1
+            this.searchKey = val
             this.initPage()
         }
     }

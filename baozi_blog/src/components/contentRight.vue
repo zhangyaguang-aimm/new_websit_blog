@@ -1,5 +1,8 @@
 <template>
     <div class="card">
+        <el-input style="margin-bottom: 20px;"  v-show="search"
+            @keyup.enter.native="searchResultChild"
+            @input="changeInput" class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
         <div class="mine card-item">
             <div class="title">
                 <span class="mine-title-span">包子</span>
@@ -24,13 +27,13 @@
             <div class="hot-list">
                 <div class="hot-item" 
                 v-for="(item,index) in hotList" 
-                :key="index" >
+                :key="index" @click="goDetail(item._id)">
                     <div class="left">
-                        <img :src="item.img || 'http://img.baozinews.cn/blog/static/default.jpg'" alt="">
+                        <img :src="item.imgUrl || 'http://img.baozinews.cn/blog/static/default.jpg'" alt="">
                     </div>
                     <div class="right">
                         <div class="hot-title">{{item.title}}</div>
-                        <div class="hot-time">{{item.time}}</div>
+                        <div class="hot-time">{{item.createAt | getTime}}</div>
                     </div>
                 </div>
             </div>
@@ -43,8 +46,8 @@
             <div class="shape"></div>
             <div class="new-list">
                 <div class="new-item" 
-                v-for="(item,index) in hotList" 
-                :key="index" >
+                v-for="(item,index) in newList" 
+                :key="index" @click="goDetail(item._id)">
                     <div class="left el-icon-s-help">
                         
                     </div>
@@ -58,23 +61,50 @@
 </template>
 <script>
 export default {
-    data () {
-        return {
-            hotList: [
-                {
-                    title: '测试内容',
-                    time: '2018-09-20',
-                    img: ''
-                },
-                {
-                    title: '测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容',
-                    time: '2018-09-20',
-                    img: 'http://demo.cssmoban.com/cssthemes4/mz_21_bfl/assets/i/b2.jpg'
-                }
-            ]
+    props: {
+        search: {
+            type: Boolean,
+            default: false
         }
     },
-    computed: {
+    data () {
+        return {
+            hotList: [],
+            newList: [],
+            serachValue: ''
+        }
+    },
+    filters: {
+        getTime(val){
+            val = new Date(val)
+            return val.getFullYear()+'-'+(val.getMonth() + 1)+'-'+val.getDate()
+        }
+    },
+    created () {
+        this.init()
+    },
+    methods: {
+        async init(){
+            let result = await this.$axios.get('/blog/newHotList')
+            console.log(result)
+            if(result.data.code == 1){
+                this.hotList = result.data.data.hotBlogList
+                this.newList = result.data.data.newBlogList
+            }
+        },
+        goDetail(id){
+            this.$router.push('/detail/'+id)
+        },
+        searchResultChild(){
+            if(this.$parent.searchResultParent){
+                this.$parent.searchResultParent(this.serachValue)
+            }
+        },
+        changeInput(){
+            if(!this.serachValue && this.$parent.searchResultParent){
+                this.$parent.searchResultParent('')
+            }
+        }
     }
 }
 </script>
@@ -158,6 +188,7 @@ export default {
             .hot-item{
                 display: flex;
                 cursor: pointer;
+                justify-content: center;
                 .right{
                     margin-left: 30px;
                     width: 180px;
@@ -177,13 +208,14 @@ export default {
                     }
                     .hot-time{
                         font-size: 11px;
-                        margin-top: 10px;
+                        margin-top: 0px;
                     }
                 }
                 .left{
                     width: 80px;
                     height: 80px;
                     overflow: hidden;
+                    box-sizing: border-box;
                     img{
                         width: 100%;
                     }

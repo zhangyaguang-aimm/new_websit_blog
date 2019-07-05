@@ -6,7 +6,7 @@
             <el-form-item class="blog-item-input" label="标题">
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
-            <el-form-item label="标签">
+            <el-form-item label="标签" v-show="tagFlag">
                 <el-select
                 class="blog-item-input"
                 :multiple-limit='limitNum'
@@ -84,6 +84,14 @@ export default {
                 }
             }
         },
+        tagFlag: {
+            type: Boolean,
+            default: true,
+        },
+        updateContent: {
+            type: Function,
+            default: null
+        }
         
     },
     components: {
@@ -134,22 +142,10 @@ export default {
             this.form.isTop = val
             console.log(val)
         },
-        async publishBlog(){
-            this.form.createAt = new Date(this.form.createAt).getTime()
-            let result = await this.$axios.post('/blog/add',Object.assign(
-                this.form, {author: JSON.parse(localStorage.getItem('userinfo'))._id}
-            ))
-            if(result && result.data.code == 1){
-                this.$message({
-                    type: 'success',
-                    message: result.data.message
-                })
-                this.$router.push('/admin')
-            }else{
-                this.$message({
-                    type: 'error',
-                    message: result.data.message
-                })
+        // 调用父元素的发布文章
+        publishBlog(){
+            if(this.$parent.publishBlog){
+                this.$parent.publishBlog(this.form)
             }
         },
         imgAdd(pos, $file){
@@ -166,17 +162,13 @@ export default {
                 this.$refs.md.$img2Url(pos, res.data.data.url);
             })
         },
-        async updateBlog(){
-            let result = await this.$axios.post('/blog/update',this.form)
-            console.log(result)
-            if(result.data.code == 1){
-                this.$message({
-                    type: 'success',
-                    message: result.data.message
-                })
-                this.$emit('modifyBlog')
+        // 调用父元素的更新文章
+        updateBlog(){
+            if(this.updateContent){
+                this.updateContent(this.form)
             }
-        }
+        },
+        
     }
 }
 </script>

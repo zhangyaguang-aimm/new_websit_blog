@@ -2,7 +2,7 @@
     <div class="content-item">
         <img class="bg-img" v-if='target.imgUrl' :src="target.imgUrl" alt="">
         <div class="text">
-            <div class="title">{{target.title}}</div>
+            <div class="title" @click="goDetail(target._id)">{{target.title}}</div>
             <div class="article-about">
                 <div class="author"><span class="el-icon-user-solid"></span>{{target.userinfo[0].username}}</div>
                 <div class="calendar"><span class="el-icon-date"></span>{{target.createAt | getTime}}</div>
@@ -12,7 +12,7 @@
             <div class="content">
                 {{target.content}}
             </div>
-            <div class="btn">
+            <div class="btn" @click="goDetail(target._id)">
                 开始阅读
             </div>
         </div>
@@ -20,6 +20,7 @@
     </div>
 </template>
 <script>
+
 export default {
     props: {
         target: Object
@@ -28,6 +29,12 @@ export default {
         return {
             
         }
+    },
+    methods: {
+        goDetail(id){
+            this.$router.push('/detail/'+id)
+        },
+        
     },
     filters: {
         getTime(val){

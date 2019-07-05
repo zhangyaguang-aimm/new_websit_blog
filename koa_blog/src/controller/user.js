@@ -7,6 +7,9 @@ const {
 
 const jwtClass = require('../../public/utils/jwt')
 
+// 密码加密
+const bcrypt = require('bcrypt')
+
 
 class UserController{
     constructor(){
@@ -20,22 +23,40 @@ class UserController{
             ctx.body = new ErrorResModel('用户名已存在')
             return
         }
-        
+
+        // 密码加密
+        let password = req.password
+        let hashPassword = await bcrypt.hash(password,10)
+
         let newUser = new UserModel({
             username: req.username,
-            password: req.password,
-            power: req.username == 'admin' ? 10 : 1
+            password: hashPassword,
+            power: req.username == 'admin' ? 10 : 1,
+            modifyAt: req.modifyAt || '',
+            email: req.email || '',
+            telphone: req.telphone || '',
+            realName: req.realName || ''
         })
         await newUser.save()
-        ctx.body = new SuccessResModel('注册成功')
+        let token = new jwtClass({username: req.username}).createToken()
+        ctx.body = new SuccessResModel({
+            token: token,
+            userinfo: {username: req.username}
+        },'注册成功')
     }
     // 登录
     static async loginUser(ctx){
         let req = ctx.request.body
-        let result = await UserModel.findOne({'username': req.username,'password': req.password})
+
+        let result = await UserModel.findOne({'username': req.username})
+        let flag = await bcrypt.compare(req.password,result.password)
+        if(!flag){
+            // 验证不通过
+            ctx.body = new ErrorResModel('账号密码不正确')
+            return
+        }
         if(result){
             let token = new jwtClass({username: req.username}).createToken()
-            console.log(token)
             ctx.body = new SuccessResModel({
                 token: token,
                 userinfo: result

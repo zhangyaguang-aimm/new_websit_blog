@@ -8,6 +8,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store/index'
 import './assets/iconfont/iconfont.css'
+let hljs = require('highlight.js')
 
 
 Vue.use(ElementUI)
@@ -18,6 +19,14 @@ let instance = axios.create({
 Vue.prototype.$axios = instance
 
 Vue.config.productionTip = false
+
+// 自定义代码高亮指令
+Vue.directive('highlight',function (el) {
+  let blocks = el.querySelectorAll('pre code');
+  blocks.forEach((block)=>{
+    hljs.highlightBlock(block)
+  })
+})
 
 /* eslint-disable no-new */
 new Vue({
