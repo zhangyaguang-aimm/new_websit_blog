@@ -1,4 +1,4 @@
-const jwt = require('../../node_modules/_jsonwebtoken@8.5.1@jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 let secret = 'jwttoken'
 
