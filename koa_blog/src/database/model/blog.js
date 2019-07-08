@@ -16,10 +16,10 @@ const blogSchema = new Schema({
         type: String,
         required: true
     },
-    author: Schema.ObjectId,
+    author: Schema.Types.ObjectId,
     tags: [{
-        type: Schema.ObjectId,
-        ref: 'tags'
+        type: Schema.Types.ObjectId,
+        ref: 'Tags'
     }],
     isShow: {
         type: Boolean,

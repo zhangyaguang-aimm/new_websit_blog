@@ -16,7 +16,7 @@ class BlogController{
         let pageNum = ctx.query.pageNum || 1
         let pageSize = ctx.query.pageSize || 10
         let searchKey = ctx.query.searchKey || ''
-        let result = await BlogModel.aggregate([
+        let resultTemp = await BlogModel.aggregate([
             {
                 // 单个关联
                 $lookup: {
@@ -24,15 +24,6 @@ class BlogController{
                     localField: 'author',
                     foreignField: '_id',
                     as: 'userinfo'
-                }
-            },
-            {
-                // 数组关联
-                $lookup: {
-                    from: 'tags',
-                    localField: 'tags',
-                    foreignField: '_id',
-                    as: 'tagList'
                 }
             },
             {
@@ -46,6 +37,15 @@ class BlogController{
             {$skip: (pageNum-1)*pageSize},
             {$limit: pageSize},
         ])
+
+        // 数组类型关联
+        let result = await (function(){
+            return new Promise(resovlve => {
+                BlogModel.populate(resultTemp, 'tags', function(err,res){
+                    resovlve(res)
+                })
+            })
+        })()
         // 获取指定查询条件的文档数量
         let count = await BlogModel.count({title: {$regex: searchKey,$options: '$i'}})
         if(result && result.length >= 0){
@@ -141,7 +141,7 @@ class BlogController{
     // 获取一个blog信息(这个是结合了文章和博客的两个库)
     static async getOneBlog(ctx){
         let _id = ctx.query._id
-        let result = await BlogModel.aggregate([
+        let resultTemp = await BlogModel.aggregate([
             {
                 // 单个关联
                 $lookup: {
@@ -152,20 +152,19 @@ class BlogController{
                 }
             },
             {
-                // 数组关联
-                $lookup: {
-                    from: 'tags',
-                    localField: 'tags',
-                    foreignField: '_id',
-                    as: 'tagList'
-                }
-            },
-            {
                 $match: {
                     _id: mongoose.Types.ObjectId(_id)
                 },
             }
         ])
+         // 数组类型关联
+         let result = await (function(){
+            return new Promise(resovlve => {
+                BlogModel.populate(resultTemp, 'tags', function(err,res){
+                    resovlve(res)
+                })
+            })
+        })()
 
         let resultArticle = await ArticleModel.aggregate([
             {
@@ -183,6 +182,7 @@ class BlogController{
                 },
             }
         ])
+        
         if(result.length > 0 || resultArticle.length > 0){
             let resultObj = result[0] || resultArticle[0]
             ctx.body = new SuccessResModel(resultObj, '获取成功')

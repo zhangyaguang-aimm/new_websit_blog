@@ -19,7 +19,7 @@
                         </div>
                         <div class="tag tips-item">
                             <span class="el-icon-collection-tag"></span>
-                            <el-tag v-for="(item,index) in blogInfo.tagList" 
+                            <el-tag v-for="(item,index) in blogInfo.tags" 
                             :key="item._id" 
                             size='mini'
                             :type="(index/2 == 0)?'success':'info'">{{item.name}}</el-tag>

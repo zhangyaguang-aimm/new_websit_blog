@@ -91,3 +91,72 @@ new UglifyJsPlugin({
 }),
 
 ```
+
+
+#### 使用history模式
+
+> 默认情况下，vue-router是用的hash的路由模式，在地址栏中总会有#号，这种情况下微信的一些分享功能会把#号后面的去除掉，因此使用history模式更合适
+
+```
+// router/index.js
+const router = new Router({
+  mode: 'history',
+  routes: [
+    {
+      path: '/',
+      component: resolve => require(['../views/out.vue'], resolve),
+    }
+})
+// 在初始化路由的时候，加上`mode: 'history'`这样就行了，
+
+// 初步完成之后打包上线，上线之前要确保，config/index.js下的`assetsPublicPath`指定到根目录下，不然刷新会报错，
+
+build: {
+    // Template for index.html
+    index: path.resolve(__dirname, '../pcBlog/index.html'),
+
+    // Paths
+    assetsRoot: path.resolve(__dirname, '../pcBlog'),
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/', 
+}
+
+
+// 完成之后，运行`npm run build`，把生成的包放到服务器上，这里还不能算正式完成，需要修改nginx配置，才能正常使用history模式
+
+// 找到服务器的`/etc/nginx/conf.d/blog.conf`文件,配置如下，必须指定到打包的目录下才行，
+
+server {
+        listen  80;
+        server_name     blog.baozinews.cn;
+        # 指定到根目录下
+        root   /usr/share/nginx/new_websit_blog/baozi_blog/pcBlog;
+        # 官方指定配置
+        location / {
+                 try_files $uri $uri/ /index.html;
+        }
+        # 接口代理
+        location /blog/v1/ {
+                proxy_pass    http://127.0.0.1:3006;
+        }
+location ~* ^.+\.(css|js|ico|gif|jpg|jpeg|png)$ {
+     log_not_found off;
+     # 关闭日志
+     access_log off;
+     # 缓存时间7天
+     expires 7d;
+     # 源服务器
+     #proxy_pass http://localhost:8888;
+     # 指定上面设置的缓存区域
+     proxy_cache imgcache;
+     # 缓存过期管理
+     proxy_cache_valid 200 302 1d;
+     proxy_cache_valid 404 10m;
+     proxy_cache_valid any 1h;
+     proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+ }
+}
+
+```
+
+到这里vue-router的history模式配置已经完成，访问刷新都可以正常使用.

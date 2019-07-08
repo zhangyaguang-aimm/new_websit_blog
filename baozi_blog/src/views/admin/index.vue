@@ -28,7 +28,7 @@
                 <template slot-scope="scope">
                     
                     <el-tag style="margin-right: 5px;"
-                    v-for="(tag,index) in scope.row.tagList" 
+                    v-for="(tag,index) in scope.row.tags" 
                     :key="tag.name"
                     :type='index%2 == 0?"success":"info"'
                     size="mini"
