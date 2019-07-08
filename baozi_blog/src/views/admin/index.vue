@@ -119,7 +119,7 @@ export default {
             return val.getFullYear()+'-'+(val.getMonth() + 1)+'-'+val.getDate()
         },
         getUserInfo(val){
-            return val[0].username
+            return val[0] ? val[0].username : ''
         }  
     },
     methods: {
@@ -134,6 +134,7 @@ export default {
             console.log(result)
             if(result && result.data.code == 1){
                 this.tableData = result.data.data.list
+                console.log(this.tableData)
                 this.count = result.data.data.count
             }
         },

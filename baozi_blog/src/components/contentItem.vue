@@ -4,7 +4,7 @@
         <div class="text">
             <div class="title" @click="goDetail(target._id)">{{target.title}}</div>
             <div class="article-about">
-                <div class="author"><span class="el-icon-user-solid"></span>{{target.userinfo[0].username}}</div>
+                <div class="author"><span class="el-icon-user-solid"></span>{{target.userinfo[0]?target.userinfo[0].username : ''}}</div>
                 <div class="calendar"><span class="el-icon-date"></span>{{target.createAt | getTime}}</div>
                 <div class="visitors "><span class="el-icon-view"></span>{{target.clickNum || 0}}</div>
             </div>

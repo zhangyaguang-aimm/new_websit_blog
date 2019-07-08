@@ -37,11 +37,11 @@ class UserController{
             telphone: req.telphone || '',
             realName: req.realName || ''
         })
-        await newUser.save()
+        let resultSave = await newUser.save()
         let token = new jwtClass({username: req.username}).createToken()
         ctx.body = new SuccessResModel({
             token: token,
-            userinfo: {username: req.username}
+            userinfo: resultSave
         },'注册成功')
     }
     // 登录
