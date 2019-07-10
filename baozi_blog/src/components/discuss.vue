@@ -1,7 +1,7 @@
 <template>
     <div class="discuss-inner">
         <discuss-publish :zone='zone'></discuss-publish>
-        <div class="discuss-list-title">
+        <div v-if="discussInfo.count != 0" class="discuss-list-title">
             <div class="top">
                 <div class="text"><span class="el-icon-edit"></span>评论列表</div>
                 <div class="tip">
@@ -16,6 +16,7 @@
                 </div>
             </div>
         </div>
+        <div class="null" v-else>暂无评论</div>
     </div>
 </template>
 
@@ -215,6 +216,11 @@ export default {
                 }
             }
         }
+    }
+    .null{
+        text-align: center;
+        color: #e74851;
+        font-weight: bold;
     }
 }
 </style>
