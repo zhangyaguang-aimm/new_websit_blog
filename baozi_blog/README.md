@@ -160,3 +160,58 @@ location ~* ^.+\.(css|js|ico|gif|jpg|jpeg|png)$ {
 ```
 
 到这里vue-router的history模式配置已经完成，访问刷新都可以正常使用.
+
+
+
+### 评论功能
+
+最开始用的是畅言的评论，后来改成自己写的评论了，主要原因是使用畅言需要加载很多外部文件，可以看下network里面加载了很多东西，同时我对评论的功能没有太高的要求，因此就自己随便写了个简单的评论留言功能，但是还是要记录下如何实现畅言的引入。
+
+
+> 这里是做了个单独的组件出来
+
+```
+<template>
+    <div id="SOHUCS" sid="请将此处替换为配置SourceID的语句"></div>
+</template>
+<script>
+export default {
+    mounted () {
+        window.changyan = undefined;
+        window.cyan = undefined;
+        this.loadScript('https://changyan.sohu.com/upload/changyan.js',()=>{
+            window.changyan.api.config({
+                appid: '###', // 此处换成你的畅言应用的appid,
+                conf: '####', // 此处换成你畅言应用的conf。
+            });
+
+        })
+    },
+    methods: {
+        loadScript(url, callback){
+            // 加载script
+            let script = document.createElement('script');
+            if (script.readyState) { 
+                // IE浏览器
+                script.onreadystatechange = function () {
+                    if (script.readyState === 'loaded' || script.readyState === 'complete') {
+                        script.onreadystatechange = null;
+                        callback();
+                    }
+                }
+            } else { 
+                // 其他浏览器
+                script.onload = function () {
+                    callback();
+                }
+            }
+            script.src = url;
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
+    }
+}
+</script>
+
+
+```
+然后在需要的地方引入组件就可以了

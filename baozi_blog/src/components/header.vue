@@ -50,6 +50,10 @@ export default {
                 {
                     title: '关于',
                     path: '/about'
+                },
+                {
+                    title: '讨论区',
+                    path: '/discuss'
                 }
             ],
             token: ''

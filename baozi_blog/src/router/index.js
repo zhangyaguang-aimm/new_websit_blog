@@ -62,6 +62,12 @@ const router = new Router({
           meta: {
             title: '详情'
           }
+        },
+        {
+          path: '/discuss',
+          name: '讨论区',
+          component: resolve => require(['@/views/discuss.vue'], resolve),
+          meta: {title: '讨论区'}
         }
       ]
     },
@@ -82,6 +88,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  document.body.scrollTop = 0
+  document.documentElement.scrollTop = 0
   if(to.matched.some(record => record.meta.requireAuthor)){
     store.dispatch('getUser').then(data => {
       if(data == 1){

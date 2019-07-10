@@ -59,7 +59,7 @@ marked.setOptions({
 })
 export default {
     components: {
-        'content-right': contentRight,  
+        'content-right': contentRight,
     },
     data () {
         return {
@@ -102,7 +102,12 @@ export default {
     }
 }
 </script>
+<style>
+/* #feedAv,#pop_ad,#feedAv,.module-cmt-footer,.module-hot-topic,.module-cmt-float-bar{position: fixed!important;display:none;left:-9999999px!important;}
+#MZAD_POP_PLACEHOLDER{position: fixed!important;left:-9999999px!important;} */
+</style>
 <style lang="scss" scoped>
+
 .detail{
     .box{
         max-width: 1140px;
@@ -141,6 +146,10 @@ export default {
                         }
                     }
                 }
+            }
+            .chang-yang{
+                box-sizing: border-box;
+                padding: 0 20px;
             }
         }
         .right{

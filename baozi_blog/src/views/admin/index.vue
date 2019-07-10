@@ -193,10 +193,10 @@ export default {
     font-family: '宋体';
     box-sizing: border-box;
     padding: 20px;
+    overflow-y: scroll;
     .blog-list{
         width: 100%;
         box-sizing: border-box;
-        overflow: hidden;
     }
     .paging{
         margin-top: 30px;

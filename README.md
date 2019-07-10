@@ -165,7 +165,162 @@ static async loginUser(ctx){
 ```
 
 
+### mongoose关联数据查询的问题
+
+由于blog表涉及到tag和user表的关联，标签这个是数组类型的，最开始的处理方式，在本地也获取到了正确的列表，发布到服务器之后却出现了问题，先记录下解决的方式，后续看下是否有更优化的处理方式.
+
+```
+// database/model/blog.js
+const blogSchema = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    createAt: {
+        type: Date,
+        default: Date.now()
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    author: Schema.Types.ObjectId,
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tags'
+    }], // tags是数组格式的，关联tags
+    isShow: {
+        type: Boolean,
+        default: true
+    },
+    modeifyAt: {
+        type: Date,
+        default: Date.now()
+    },
+    clickNum: {
+        type: Number,
+        default: 0
+    },
+    imgUrl: String,
+    power: {
+        type: Number,
+        default: 0
+    },
+    isTop: {
+        type: Boolean,
+        default: false
+    }
+})
+
+// controller/blog.js获取blog列表
+BlogModel.aggregate([
+    {
+        // 单个关联
+        $lookup: {
+            from: 'users',
+            localField: 'author',
+            foreignField: '_id',
+            as: 'userinfo'
+        }
+    },
+    {
+        // 单个关联
+        $lookup: {
+            from: 'tags',
+            localField: 'tags',
+            foreignField: '_id',
+            as: 'tagList'
+        }
+    },
+    {
+        $match: {
+            $or: [
+                {title: {$regex: searchKey,$options: '$i'}},
+            ]
+        },
+    },
+    {$sort: {createAt: -1}},
+    {$skip: (pageNum-1)*pageSize},
+    {$limit: pageSize},
+])
+
+
+```
+最开是按照上面写的来的，在本地运行的时候没什么问题，能够正常获取到`tagList`，然后部署到服务器上之后tagList显示的一直是空，但是tag里面已经存储了tag的id，本以为是mongodb版本太低的原因，当时用的是3.2.0后来更新之后还是不行，最终是通过另外一种方式解决的，下面是解决方案，后续会找下优化的方式，是不是代码写的有问题,感觉下面的处理代码的方式不太好
+
+```
+// controller/blog.js
+let resultTemp = await BlogModel.aggregate([
+    {
+        // 单个关联
+        $lookup: {
+            from: 'users',
+            localField: 'author',
+            foreignField: '_id',
+            as: 'userinfo'
+        }
+    },
+    {
+        $match: {
+            $or: [
+                {title: {$regex: searchKey,$options: '$i'}},
+            ]
+        },
+    },
+    {$sort: {createAt: -1}},
+    {$skip: (pageNum-1)*pageSize},
+    {$limit: pageSize},
+])
+
+// 数组类型关联
+let result = await (function(){
+    return new Promise(resovlve => {
+        // 在这里在关联下tags获取tags列表,这样处理在blogmodel中tags必须{type: mongoose.Schema.Types.ObjectId,ref:'Tags'}
+        BlogModel.populate(resultTemp, 'tags', function(err,res){
+            resovlve(res)
+        })
+    })
+})()
+
+
+```
+目前已经能在服务器上正常运行，网上给出的方案就是第一种，但是不清楚为什么在服务上不能正常运行，后续会继续查找方案，解决后会更新在文档上.
 
 
 
+### 设置超时时间
+
+```
+// public/utils/time-out.js
+
+async function timeOut(ctx, next) {
+    var tmr = null;
+    const timeout = 5000;//设置超时时间
+    // 这里是Promise.race数组中的promise对象谁先执行完就走谁
+    await Promise.race([
+        new Promise(function (resolve, reject) {
+            tmr = setTimeout(function () {
+                var e = new Error('Request timeout');
+                e.status = 408;
+                reject(e);
+            }, timeout);
+        }),
+        new Promise(function (resolve, reject) {
+            //使用一个闭包来执行下面的中间件
+            (async function () {
+                await next();
+                clearTimeout(tmr);
+                resolve();
+            })();
+        })
+    ])
+}
+
+module.exports = timeOut
+
+// app.js
+app.use(TimeOut)
+
+
+```
 
