@@ -30,7 +30,7 @@ class BlogController{
         if(userOne && userOne.power >= 8){
             delete matchObj.author
         }
-        
+
 
         let resultTemp = await BlogModel.aggregate([
             {
@@ -137,9 +137,18 @@ class BlogController{
         return result
     }
     // 最热的列表
-    static async hotBlogList(){
-        let result = await BlogModel.find({isTop: true}).sort({createAt: -1}).limit(3)
+    static async hotBlogList(count){
+        count = count?count:3
+
+        let result = await BlogModel.find({isTop: true}).sort({createAt: -1}).limit(parseInt(count))
         return result
+    }
+    // 获取最新热列表
+    static async getHotList(ctx){
+        let result = await this.hotBlogList(ctx.query.count)
+        ctx.body = new SuccessResModel({
+            result: result
+        }, '请求成功')
     }
     // 获取最热和最新
      static async newHotList(ctx){
