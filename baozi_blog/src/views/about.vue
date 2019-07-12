@@ -12,31 +12,37 @@
             <div class="mine-skill-item">
                 <div class="left">HTML/JS/CSS</div>
                 <div class="right">
-                    <el-progress :text-inside="true" :stroke-width="26" :percentage="86"></el-progress>
+                    <el-progress :text-inside="true" :stroke-width="26" :percentage="progress.html"></el-progress>
                 </div>
             </div>
             <div class="mine-skill-item">
-                <div class="left">Node/Monogdb</div>
+                <div class="left">Node</div>
                 <div class="right">
-                    <el-progress :text-inside="true" :stroke-width="26" color='#f56c6c' :percentage="56"></el-progress>
+                    <el-progress :text-inside="true" :stroke-width="26" color='#67C23A' :percentage="progress.node"></el-progress>
+                </div>
+            </div>
+            <div class="mine-skill-item">
+                <div class="left">Mongodb</div>
+                <div class="right">
+                    <el-progress :text-inside="true" :stroke-width="26" color='#f56c6c' :percentage="progress.mongodb"></el-progress>
                 </div>
             </div>
             <div class="mine-skill-item">
                 <div class="left">Typescript</div>
                 <div class="right">
-                    <el-progress :text-inside="true" :stroke-width="26" color='#e6a23c' :percentage="80"></el-progress>
+                    <el-progress :text-inside="true" :stroke-width="26" color='#e6a23c' :percentage="progress.typescript"></el-progress>
                 </div>
             </div>
             <div class="mine-skill-item">
                 <div class="left">Vue</div>
                 <div class="right">
-                    <el-progress :text-inside="true" :stroke-width="26" color='#5cb87a' :percentage="80"></el-progress>
+                    <el-progress :text-inside="true" :stroke-width="26" color='#5cb87a' :percentage="progress.vue"></el-progress>
                 </div>
             </div>
             <div class="mine-skill-item">
                 <div class="left">React</div>
                 <div class="right">
-                    <el-progress :text-inside="true" :stroke-width="26" color='#6f7ad3' :percentage="30"></el-progress>
+                    <el-progress :text-inside="true" :stroke-width="26" color='#6f7ad3' :percentage="progress.react"></el-progress>
                 </div>
             </div>
         </div>
@@ -46,8 +52,27 @@
 export default {
     data () {
         return {
-            
+            progress:{
+                html: 0,
+                node: 0,
+                mongodb: 0,
+                typescript: 0,
+                vue: 0,
+                react: 0
+            }
         }
+    },
+    mounted () {
+        setTimeout(() => {
+            this.progress = {
+                html: 86,
+                node: 56,
+                mongodb: 40,
+                typescript: 30,
+                vue: 78,
+                react: 36
+            }
+        }, 0);
     }
 }
 </script>
