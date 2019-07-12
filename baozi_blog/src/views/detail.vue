@@ -42,7 +42,7 @@ import contentRight from '../components/contentRight'
 import vDiscuss from '../components/discuss'
 let marked = require('marked')
 let hljs = require('highlight.js')
-import 'highlight.js/styles/solarized-dark.css'
+import 'highlight.js/styles/atom-one-dark.css'
 marked.setOptions({
     renderer: new marked.Renderer(),
     gfm: true,
