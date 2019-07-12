@@ -73,7 +73,8 @@ export default {
             if(result && result.data.code == 1){
                 localStorage.setItem('token',result.data.data.token)
                 localStorage.setItem('userinfo',JSON.stringify(result.data.data.userinfo))
-                this.$router.push('/')
+                // this.$router.push('/')
+                this.$router.go(-1)
             }else{
                 this.$message.error(result.data.message)
             }

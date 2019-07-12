@@ -13,25 +13,12 @@ class RemarkController {
     // 新增回复
     static async addRemark(ctx){
         let req = ctx.request.body
-        let findOne = await RemarkModel.aggregate([
-            {
-                $match: {
-                    $or: [
-                        {'guestInfo.nickname': req.guestInfo.nickname},
-                        {author: req.author}
-                    ],
-                    content: req.content
-                }
-            }
-        ])
-        if(findOne.length > 0){
-            ctx.body = new ErrorResModel('请不要重复提交')
-            return
-        }
+        
         let tempObj = {
             content: req.content,
             zone: req.zone,
             guestInfo: req.guestInfo,
+            createAt: Date.now()
         }
         if(req.author){
             tempObj.author = req.author
@@ -52,7 +39,6 @@ class RemarkController {
     static async getRemarkList(ctx){
         let pageNum = ctx.query.pageNum || 1
         let pageSize = ctx.query.pageSize || 10
-        
         let resultTemp = await RemarkModel.aggregate([
             {
                 $lookup: {
@@ -76,7 +62,11 @@ class RemarkController {
             return new Promise(resolve => {
                 RemarkModel.populate(resultTemp, {
                     path: 'replys',
-                    populate: {path: 'author'}
+                    options: {
+                        sort: {createAt: -1}
+                    },
+                    populate: {path: 'author'},
+                    
                 }, function(err,res){
                     resolve(res)
                 })

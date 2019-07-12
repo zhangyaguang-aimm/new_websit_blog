@@ -110,13 +110,18 @@ export default {
     methods: {
         async init(obj){
             obj = obj || {}
-            let result = await this.$axios.get('/article/list',{
-                params: {
+            let params = {
                     pageNum: this.pageNum,
                     searchKey: obj.searchKey || ''
                 }
+            try{
+                params.author = JSON.parse(localStorage.getItem('userinfo'))._id
+            }catch(err){
+
+            }
+            let result = await this.$axios.get('/article/list',{
+                params: params
             })
-            console.log(result)
             if(result && result.data.code == 1){
                 this.tableData = result.data.data.list
                 this.count = result.data.data.count

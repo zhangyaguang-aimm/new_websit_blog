@@ -27,6 +27,9 @@
                     </div>
                 </div>
                 <div class="markdown" v-html="compiledMarkdown" v-highlight></div>
+                <div v-if="blogInfo._id">
+                    <v-discuss :blogId='blogInfo._id'></v-discuss>
+                </div>
             </div> 
             <div class="right">
                 <content-right></content-right>
@@ -36,7 +39,7 @@
 </template>
 <script>
 import contentRight from '../components/contentRight'
-
+import vDiscuss from '../components/discuss'
 let marked = require('marked')
 let hljs = require('highlight.js')
 import 'highlight.js/styles/solarized-dark.css'
@@ -60,6 +63,7 @@ marked.setOptions({
 export default {
     components: {
         'content-right': contentRight,
+        'v-discuss': vDiscuss
     },
     data () {
         return {
@@ -88,7 +92,6 @@ export default {
             document.documentElement.scrollTop = 0
             let _id = this.$route.params.id
             let result = await this.$axios.get('/blog/detail',{params:{_id: _id}})
-            console.log(result)
             this.$axios.get('/dot/dotContent',{params:{_id: _id}})
             if(result.data.code == 1){
                 this.blogInfo = result.data.data

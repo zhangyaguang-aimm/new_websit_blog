@@ -32,7 +32,8 @@ export default {
             type: String,
             default: 'blog'
         },
-        remarkId: String
+        remarkId: String,
+        blogId: String,
     },
     data () {
         return {
@@ -74,12 +75,6 @@ export default {
                     message: '请填写昵称'
                 })
                 return
-            }else if(!this.author && !regEmail.test(this.guestInfo.email)){
-                this.$message({
-                    type: 'error',
-                    message: '请填写正确邮箱'
-                })
-                return
             }
             if(this.isShowReply){
                 // 回复评论
@@ -88,7 +83,8 @@ export default {
                     guestInfo: this.guestInfo,
                     zone: this.zone,
                     remarkId: this.remarkId,
-                    author: this.author
+                    author: this.author,
+                    blogId: this.blogId
                 })
                 if(resultReply.data.code == 1){
                     this.$message({
@@ -96,16 +92,25 @@ export default {
                         message: '评论成功'
                     })
                 }
+                if(this.$parent.$parent.init){
+                    this.$parent.$parent.init(true)
+                }
                 return
             }
+            
             // 发表评论
             let result = await this.$axios.post('/remark/add',{
                 content: this.content,
                 guestInfo: this.guestInfo,
                 zone: this.zone,
-                author: this.author
+                author: this.author,
+                blogId: this.blogId
             }) 
             if(result.data.code == 1){
+                
+                if(this.$parent.init){
+                    this.$parent.init(true)
+                }
                 this.$message({
                     type: 'success',
                     message: '评论成功'

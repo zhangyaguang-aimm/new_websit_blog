@@ -215,3 +215,39 @@ export default {
 
 ```
 然后在需要的地方引入组件就可以了
+
+
+
+### 上线的过程
+
+这里记录下上线的配置，前端后台的都有，涉及到直接打包上线，node的部署，以及cdn的加速处理
+
+1.首先是前端页面
+
+首先`npm run build`生成打包后的文件，由于修改了配置，我这里生成的是pcBlog文件，将文件放到服务器上，配置对应的nginx
+
+```
+// /etc/nginx/conf.d/blog.conf
+server {
+        listen  80;
+        server_name     blog.baozinews.cn; // 二级域名
+        root   /usr/share/nginx/new_websit_blog/baozi_blog/pcBlog; // 目录文件
+        // 这是vue-router官方指定配置，针对history模式的配置
+        location / {
+                 try_files $uri $uri/ /index.html;
+        }
+        location /blog/v1/ {
+                proxy_pass    http://127.0.0.1:3006; // 代理地址，后台node的端口号
+        }
+}
+
+```
+因为采用的是`history`模式，因此打包上线的时候需要将域名指定到项目的根目录下，同事要加上上面的这段nginx配置，不然访问二级页面会报错.
+
+然后就是cdn加速，使用的是七牛的cdn加速，上传图片也是使用的七牛云存储，关键是免费。具体使用是先绑定cdn加速域名，我这里使用的`dragon.baozinews.cn`这个二级域名，(这里的二级域名是`www.dnspod.cn`上生成的)，最终的加速访问域名就是这个，需要配置好cname参数，配置非常简单，根据提示或者网上搜索下就行了。配置完成之后就能访问这个加速域名了，但是要在七牛云上配置这个加速域名的回源域名，这里指的就是你项目真正访问的域名，就是在nginx配置的二级域名.到这里就能直接访问这个加速二级域名了，同时访问的就是你配置好的nginx指向的目录。
+
+2.后端启动
+
+先把项目放到服务器，然后使用`pm2 start src/app.js --name '启动的项目名称随便起'`就能启动对应的node项目，这是最简单的启动方式，`pm2 save`保存启动项目，`pm2 ls`查看所有的启动项目,`pm2 restart id`重启对应的项目,`pm2 log id`查看对应项目log日志
+
+

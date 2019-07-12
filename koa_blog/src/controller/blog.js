@@ -1,5 +1,6 @@
 const BlogModel = require('../database/model/blog')
 const ArticleModel = require('../database/model/article')
+const UserModel = require('../database/model/user')
 
 const {
     SuccessResModel,
@@ -16,6 +17,21 @@ class BlogController{
         let pageNum = ctx.query.pageNum || 1
         let pageSize = ctx.query.pageSize || 10
         let searchKey = ctx.query.searchKey || ''
+        /**
+         * 这一块是处理权重的问题的，超级管理员和普通用户，后台管理页面的
+         * 获取到的列表是不同的
+          */
+        let author = ctx.query.author
+        let matchObj = {}
+        if(author){
+            matchObj.author = mongoose.Types.ObjectId(author)
+        }
+        let userOne = await UserModel.findOne({_id: mongoose.Types.ObjectId(author)})
+        if(userOne && userOne.power >= 8){
+            delete matchObj.author
+        }
+        
+
         let resultTemp = await BlogModel.aggregate([
             {
                 // 单个关联
@@ -27,11 +43,11 @@ class BlogController{
                 }
             },
             {
-                $match: {
+                $match: Object.assign({
                     $or: [
                         {title: {$regex: searchKey,$options: '$i'}},
-                    ]
-                },
+                    ],
+                },matchObj),
             },
             {$sort: {createAt: -1}},
             {$skip: (pageNum-1)*pageSize},
@@ -47,7 +63,8 @@ class BlogController{
             })
         })()
         // 获取指定查询条件的文档数量
-        let count = await BlogModel.count({title: {$regex: searchKey,$options: '$i'}})
+        let count = await BlogModel.count(Object.assign({
+            title: {$regex: searchKey,$options: '$i'}},matchObj))
         if(result && result.length >= 0){
             ctx.body = new SuccessResModel({
                 list: result,

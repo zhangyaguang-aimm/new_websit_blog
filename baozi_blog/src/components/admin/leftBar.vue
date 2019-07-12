@@ -29,6 +29,7 @@
                         <el-submenu index="1-3">
                             <template slot="title">用户管理</template>
                             <el-menu-item @click="$router.push('/admin/user/list')" index="1-3-1">用户列表</el-menu-item>
+                            <el-menu-item @click="$router.push('/admin/usercenter')" index="1-3-2">用户中心</el-menu-item>
                         </el-submenu>
                     </el-menu-item-group>
                     <el-menu-item-group>

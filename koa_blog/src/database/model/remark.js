@@ -15,7 +15,7 @@ const remarkShema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    blogId: Schema.Types.ObjectId,
+    blogId: String,
     zone: String, // 判断是不是在讨论区的
     replys: [{
         type: Schema.Types.ObjectId,

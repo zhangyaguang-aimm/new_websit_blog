@@ -7,12 +7,12 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        userinfo: {}
+        userinfo: {},
     },
     mutations: {
         'SET_ROLES':(state,userinfo) => {
             state.userinfo = userinfo
-        }
+        },
     },
     actions: {
         getUser({commit, state}){
@@ -26,7 +26,7 @@ const store = new Vuex.Store({
                     reject(error)
                 })
             })
-        }
+        },
     }
 })
 

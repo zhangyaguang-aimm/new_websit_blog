@@ -12,26 +12,12 @@ class ReplyController {
     constructor(){}
     static async addReply(ctx){
         let req = ctx.request.body
-        let findOne = await ReplyModel.aggregate([
-            {
-                $match: {
-                    $or: [
-                        {'guestInfo.nickname': req.guestInfo.nickname},
-                        {author: req.author}
-                    ],
-                    content: req.content
-                }
-            }
-        ])
-        if(findOne.length > 0){
-            ctx.body = new ErrorResModel('请不要重复提交')
-            return
-        }
         let tempObj = {
             content: req.content,
             zone: req.zone,
             guestInfo: req.guestInfo,
-            remarkId: req.remarkId
+            remarkId: req.remarkId,
+            createAt: Date.now()
         }
         if(req.author){
             tempObj.author = req.author
