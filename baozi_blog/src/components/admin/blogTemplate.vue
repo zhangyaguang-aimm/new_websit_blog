@@ -30,7 +30,7 @@
                 placeholder="选择日期时间">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="置顶">
+            <el-form-item v-if="userinfo.power > 8" label="置顶">
                 <el-switch
                 v-model="form.isTop"
                 @change='changeTop'
@@ -91,7 +91,8 @@ export default {
         updateContent: {
             type: Function,
             default: null
-        }
+        },
+        userinfo: {}
         
     },
     components: {
@@ -115,6 +116,13 @@ export default {
     },
     created () {
         this.getTagList()
+        
+    },
+    mounted (){
+        if(localStorage.getItem('userinfo')){
+            this.userinfo = JSON.parse(localStorage.getItem('userinfo'))
+        }
+        console.log(this.userinfo, 'aaa')
     },
     methods: {
         async getTagList(){
