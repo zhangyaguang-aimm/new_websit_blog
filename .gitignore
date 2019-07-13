@@ -8,6 +8,7 @@
 
 # 后台
 /koa_blog/node_modules/
+/koa_blog/logs/
 
 # Editor directories and files
 .idea

@@ -100,7 +100,6 @@ export default {
     },
     computed: {
         getImg(){
-            console.log(this.form.imgUrl)
             if(this.form.imgUrl){
                 return [{name: '', url: this.form.imgUrl}]
             }

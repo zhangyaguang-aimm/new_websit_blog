@@ -9,6 +9,7 @@ const jwtClass = require('../../public/utils/jwt')
 
 // 密码加密
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 
 
 class UserController{
@@ -76,14 +77,30 @@ class UserController{
             ctx.body = new ErrorResModel('登录已失效')
             return
         }
-
-        let result = await UserModel.findOne({'username': ctx.query.username}) 
+        let result = await UserModel.findOne({_id: mongoose.Types.ObjectId(ctx.query._id)}) 
         ctx.body = new SuccessResModel(result,'获取成功')
 
     }
     // 获取用户列表
     static async getUserList(ctx){
         
+    }
+    // 更新用户
+    static async updateUser(ctx){
+        let req = ctx.request.body
+        let updateUser = req
+        Object.keys(updateUser).forEach((key) => {
+            if(!updateUser[key]){
+                delete updateUser[key]
+            }
+        })
+        let result = await UserModel.updateOne({_id: mongoose.Types.ObjectId(req._id)},updateUser)
+        if(result.nModified == 1){
+            ctx.body = new SuccessResModel('更新成功')
+        }else{
+            ctx.body = new ErrorResModel('更新失败')
+            
+        }
     }
 }
 

@@ -12,6 +12,7 @@ const store = new Vuex.Store({
     mutations: {
         'SET_ROLES':(state,userinfo) => {
             state.userinfo = userinfo
+            localStorage.setItem('userinfo',JSON.stringify(updateUser))
         },
     },
     actions: {
@@ -20,6 +21,11 @@ const store = new Vuex.Store({
                 getUserInfo(Vue.prototype.$axios).then(data => {
                     if(!data){
                         reject('验证失败，请重新登录.')
+                    }
+                    try{
+                        commit('SET_ROLES',data.data)
+                    }catch(err){
+                        console.log(err)
                     }
                     resolve(data)
                 }).catch(error => {

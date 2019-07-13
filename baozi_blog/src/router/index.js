@@ -92,7 +92,7 @@ router.beforeEach((to, from, next) => {
   document.documentElement.scrollTop = 0
   if(to.matched.some(record => record.meta.requireAuthor)){
     store.dispatch('getUser').then(data => {
-      if(data == 1){
+      if(data.code == 1){
         next()
       }else{
         next('/login')

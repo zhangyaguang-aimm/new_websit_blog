@@ -29,7 +29,10 @@ const userSchema = new Schema({
     SF: String,
     jueJin: String,
     interest: String,
-    introduction: String
+    introduction: String,
+    sex: String,
+    website: String,
+    birthday: Date
 })
 
 

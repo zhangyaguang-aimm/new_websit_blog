@@ -1,2 +1,0 @@
-webpackJsonp([10],{YGxt:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r={render:function(){var e=this.$createElement;return(this._self._c||e)("div",{staticClass:"user-center"})},staticRenderFns:[]};var c=n("C7Lr")({data:function(){return{}}},r,!1,function(e){n("jTJe")},"data-v-6cc260e4",null);t.default=c.exports},jTJe:function(e,t){}});
-//# sourceMappingURL=10.8e252720bc62acab3c1b.js.map

@@ -5,17 +5,18 @@
             @input="changeInput" class="search-input" v-model="serachValue" placeholder="请输入搜索内容"></el-input>
         <div class="mine card-item">
             <div class="title">
-                <span class="mine-title-span">包子</span>
+                <span class="mine-title-span">{{userinfo.username || '包子'}}</span>
             </div>
             <div class="shape"></div>
             <div class="mine-avtar">
-                <img src="http://demo.cssmoban.com/cssthemes4/mz_21_bfl/assets/i/b2.jpg" alt="">
+                <img class="avatar-img" v-if="userinfo.imgUrl" :src="userinfo.imgUrl" alt="">
+                <img v-else src="http://demo.cssmoban.com/cssthemes4/mz_21_bfl/assets/i/b2.jpg" alt="">
             </div>
-            <div class="tip">业精于勤，荒于嬉；行成于思，毁于随。</div>
+            <div class="tip">{{userinfo.desc || '业精于勤，荒于嬉；行成于思，毁于随。'}}</div>
             <div class="connect">
-                <span class="iconfont icon-github"></span>
-                <span class="iconfont icon-sf"></span>
-                <span class="iconfont icon-juejin"></span>
+                <span @click="openUrl(userinfo.github||'https://github.com/dragonnahs/new_websit_blog')" class="iconfont icon-github"></span>
+                <span @click="openUrl(userinfo.SF||'https://segmentfault.com/u/dragonnahs')" class="iconfont icon-sf"></span>
+                <span @click="openUrl(userinfo.SF||'https://juejin.im/user/591e2a7bda2f60005d291262')" class="iconfont icon-juejin"></span>
             </div>
         </div>
 
@@ -71,7 +72,8 @@ export default {
         return {
             hotList: [],
             newList: [],
-            serachValue: ''
+            serachValue: '',
+            userinfo: {}
         }
     },
     filters: {
@@ -86,11 +88,11 @@ export default {
     methods: {
         async init(){
             let result = await this.$axios.get('/blog/newHotList')
-            console.log(result)
             if(result.data.code == 1){
                 this.hotList = result.data.data.hotBlogList
                 this.newList = result.data.data.newBlogList
             }
+            this.userinfo = localStorage.getItem('userinfo')?JSON.parse(localStorage.getItem('userinfo')):{}
         },
         goDetail(id){
             this.$router.push('/detail/'+id)
@@ -104,6 +106,11 @@ export default {
             if(!this.serachValue && this.$parent.searchResultParent){
                 this.$parent.searchResultParent('')
             }
+        },
+        // 点击打开指定连接
+        openUrl(val){
+            console.log(val)
+            window.open(val)
         }
     }
 }
@@ -155,8 +162,15 @@ export default {
         }
         .mine-avtar{
             width: 100%;
+            text-align: center;
             img{
                 width: 100%;
+                &.avatar-img{
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    box-shadow: 2px 2px 5px #000;
+                }
             }
         }
         .tip{

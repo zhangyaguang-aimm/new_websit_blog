@@ -61,7 +61,6 @@ export default {
                     blogId: this.blogId
                 }
             })
-            console.log(result)
             if(result.data.code == 1){
                 this.count = result.data.data.count
                 if(childFlag){

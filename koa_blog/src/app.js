@@ -8,6 +8,10 @@ app.use(koaBody())
 const router = require('./router/index')
 const { port } = require('../config/config')
 
+const LogJS = require('./common/log/log4')
+
+// log4.js引入
+app.use(LogJS())
 
 app.use(TimeOut)
 
