@@ -17,6 +17,13 @@ let resFileName = 'response';
 // 响应日志输出完整路径
 let resLogPath = baseLogPath + resPath + '/' + resFileName;
 
+// 错误日志目录
+let errPath = '/error';
+// 错误日志文件名
+let errFileName = 'error';
+// 错误日志输出完整路径
+let errLogPath = baseLogPath + errPath + '/' + errFileName;
+
 
 module.exports = {
     appenders: {
@@ -49,6 +56,20 @@ module.exports = {
             layout: {
                 type: 'basic'
             }
+        },
+        // 错误日志
+        'errLogger': {
+            type: 'dateFile',
+            filename: errLogPath,
+            pattern: '-yyyy-MM-dd-hh.log',
+            alwaysIncludePattern: true,
+            encoding: 'utf-8',
+            maxLogSize: 1000,
+            numBackups: 1,
+            path: errPath,
+            layout: {
+                type: 'basic'
+            }
         }
     },
     categories: {
@@ -63,6 +84,10 @@ module.exports = {
         resLogger: {
             appenders: ['resLogger'],
             level: 'info'
+        },
+        errLogger: {
+            appenders: ['errLogger'],
+            level: 'error'
         }
     }
 }
