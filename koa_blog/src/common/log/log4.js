@@ -72,7 +72,6 @@ module.exports = (options) => {
     return async (ctx,next) => {
         const startTime = new Date()
         let period;
-        console.log(ctx)
         try{
             // 请求日志
             HandleLogger.reqLogger(ctx)

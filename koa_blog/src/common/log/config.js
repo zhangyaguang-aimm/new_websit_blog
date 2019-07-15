@@ -89,5 +89,7 @@ module.exports = {
             appenders: ['errLogger'],
             level: 'error'
         }
-    }
+    },
+    pm2: true,
+    replaceConsole: true
 }
