@@ -91,5 +91,5 @@ module.exports = {
         }
     },
     pm2: true,
-    replaceConsole: true
+    replaceConsole: true,
 }
