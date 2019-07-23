@@ -6,6 +6,14 @@
 /baozi_blog/yarn-debug.log*
 /baozi_blog/yarn-error.log*
 
+# 移动端
+/mobile_blog/.DS_Store
+/mobile_blog/node_modules/
+/mobile_blog/dist/
+/mobile_blog/npm-debug.log*
+/mobile_blog/yarn-debug.log*
+/mobile_blog/yarn-error.log*
+
 # 后台
 /koa_blog/node_modules/
 /koa_blog/logs/

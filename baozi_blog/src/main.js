@@ -14,7 +14,6 @@ let hljs = require('highlight.js')
 Vue.use(ElementUI)
 let instance = axios.create({
   baseURL: '/blog/v1',
-  timeout: 1000
 })
 Vue.prototype.$axios = instance
 
