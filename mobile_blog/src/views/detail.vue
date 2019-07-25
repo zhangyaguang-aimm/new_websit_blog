@@ -81,20 +81,25 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+    .detail{
+        .markdown{
+            p{
+                word-wrap: break-word;
+                img{
+                    width: 100%;
+                }
+            }
+        }
+    }
+</style>
 <style lang="scss" scoped>
 .detail{
     .markdown{
         box-sizing: border-box;
         padding: 20px;
         font-size: 26px;
-        p{
-            word-wrap: break-word;
-            img{
-                width: 100%;
-            }
-        }
     }
-    
     .top{
         padding: 30px 20px 0;
         .top-title{
