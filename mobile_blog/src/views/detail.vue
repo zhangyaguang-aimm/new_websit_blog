@@ -88,6 +88,12 @@ export default {
         padding: 20px;
         font-size: 26px;
     }
+    p{
+        word-wrap: break-word;
+        img{
+            width: 100%;
+        }
+    }
     .top{
         padding: 30px 20px 0;
         .top-title{
